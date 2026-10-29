@@ -1,0 +1,20 @@
+@model CathedralLibrary.ViewModels.ReaderForm
+@{
+    var editing = ViewContext.RouteData.Values["action"]?.ToString() == "Edit";
+    ViewData["Title"] = editing ? "Редагувати — Читачі" : "Додати — Читачі";
+}
+
+<div class="container py-4">
+    <h1>@ViewData["Title"]</h1>
+    <form method="post" asp-antiforgery="true" class="col-lg-7">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="FullName" class="form-label">ПІБ читача</label><input asp-for="FullName" type="text" class="form-control" /><span asp-validation-for="FullName" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Faculty" class="form-label">Факультет</label><input asp-for="Faculty" type="text" class="form-control" /><span asp-validation-for="Faculty" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Department" class="form-label">Кафедра</label><input asp-for="Department" type="text" class="form-control" /><span asp-validation-for="Department" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Position" class="form-label">Посада</label><input asp-for="Position" type="text" class="form-control" /><span asp-validation-for="Position" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Email" class="form-label">Email</label><input asp-for="Email" type="email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>
+    </form>
+</div>

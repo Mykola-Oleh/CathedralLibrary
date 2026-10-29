@@ -1,0 +1,16 @@
+@model CathedralLibrary.Models.Author
+@{
+    ViewData["Title"] = "Перегляд — Автори";
+}
+
+<div class="container py-4">
+    <h1>Перегляд запису</h1>
+    <dl class="row">
+        <dt class="col-sm-4">FullName</dt>
+        <dd class="col-sm-8">@Model.FullName</dd>
+        <dt class="col-sm-4">Biography</dt>
+        <dd class="col-sm-8">@Model.Biography</dd>
+    </dl>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>

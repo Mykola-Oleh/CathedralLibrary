@@ -1,14 +1,21 @@
-@{
-    ViewData["Title"] = "Головна";
-}
-<section class="py-5">
-    <div class="container">
-        <div class="p-5 mb-4 bg-light rounded-3">
-            <div class="container-fluid py-3">
-                <h1 class="display-5 fw-bold">Кафедральна бібліотека</h1>
-                <p class="col-md-9 fs-5">Інформаційна система для обліку бібліотечного фонду, авторів, примірників і читачів.</p>
-                <p>Це початкова версія проєкту.</p>
+@foreach (var item in new[]
+{
+    ("Автори", "Authors"),
+    ("Читачі", "Readers"),
+    ("Примірники", "Copies"),
+    ("Запити", "Requests")
+})
+{
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">@item.Item1</h2>
+                <a asp-controller="@item.Item2"
+                   asp-action="Index"
+                   class="stretched-link">
+                    Відкрити розділ
+                </a>
             </div>
         </div>
     </div>
-</section>
+}

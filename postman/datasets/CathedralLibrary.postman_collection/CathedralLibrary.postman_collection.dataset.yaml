@@ -1,0 +1,22 @@
+type: dataset
+name: CathedralLibrary.postman_collection
+id: d1c1c7ab-e71d-4f95-b7d8-86a55e965c93
+data_dir: .resources
+sources:
+  - from: embedded_datasource
+    datasource:
+      name: source_cathedrallibrary_postman_collection
+      id: 7ed0d905-8dc1-4ec4-89f3-869f20d93df8
+      dsKey: source_cathedrallibrary_postman_collection
+      format: json
+      source_type: static
+      location:
+        type: local_filesystem
+        value: .resources/cathedrallibrary-postman-collection.json
+views:
+  - from: embedded_view
+    view:
+      name: 'CathedralLibrary.postman_collection'
+      id: '14b1e35e-861a-4241-9193-805349be841e'
+      query: |-
+        SELECT * FROM source_cathedrallibrary_postman_collection

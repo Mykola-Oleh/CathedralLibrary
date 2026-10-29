@@ -1,0 +1,15 @@
+@model CathedralLibrary.Models.Copy
+@{
+    ViewData["Title"] = "Видалення — Примірники";
+}
+
+<div class="container py-4">
+    <h1>Видалити запис?</h1>
+    <div class="alert alert-warning">
+        Ви впевнені, що хочете видалити цей запис? Пов’язані дані можуть забороняти видалення.
+    </div>
+    <form method="post" asp-antiforgery="true">
+        <button type="submit" class="btn btn-danger">Так, видалити</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>
+    </form>
+</div>

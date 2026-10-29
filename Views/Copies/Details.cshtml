@@ -1,0 +1,18 @@
+@model CathedralLibrary.Models.Copy
+@{
+    ViewData["Title"] = "Перегляд — Примірники";
+}
+
+<div class="container py-4">
+    <h1>Перегляд запису</h1>
+    <dl class="row">
+        <dt class="col-sm-4">Publication.Title</dt>
+        <dd class="col-sm-8">@Model.Publication.Title</dd>
+        <dt class="col-sm-4">CopyNumber</dt>
+        <dd class="col-sm-8">@Model.CopyNumber</dd>
+        <dt class="col-sm-4">CopyStatus.Name</dt>
+        <dd class="col-sm-8">@Model.CopyStatus.Name</dd>
+    </dl>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>

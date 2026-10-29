@@ -1,0 +1,18 @@
+@model CathedralLibrary.ViewModels.CopyForm
+@{
+    var editing = ViewContext.RouteData.Values["action"]?.ToString() == "Edit";
+    ViewData["Title"] = editing ? "Редагувати — Примірники" : "Додати — Примірники";
+}
+
+<div class="container py-4">
+    <h1>@ViewData["Title"]</h1>
+    <form method="post" asp-antiforgery="true" class="col-lg-7">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="PublicationId" class="form-label">Видання</label><select asp-for="PublicationId" asp-items="ViewBag.Publications" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="PublicationId" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="CopyNumber" class="form-label">Номер примірника</label><input asp-for="CopyNumber" type="number" class="form-control" /><span asp-validation-for="CopyNumber" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="CopyStatusId" class="form-label">Стан</label><select asp-for="CopyStatusId" asp-items="ViewBag.Statuses" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="CopyStatusId" class="text-danger"></span></div>
+
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>
+    </form>
+</div>

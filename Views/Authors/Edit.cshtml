@@ -1,0 +1,17 @@
+@model CathedralLibrary.ViewModels.AuthorForm
+@{
+    var editing = ViewContext.RouteData.Values["action"]?.ToString() == "Edit";
+    ViewData["Title"] = editing ? "Редагувати — Автори" : "Додати — Автори";
+}
+
+<div class="container py-4">
+    <h1>@ViewData["Title"]</h1>
+    <form method="post" asp-antiforgery="true" class="col-lg-7">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="FullName" class="form-label">ПІБ автора</label><input asp-for="FullName" type="text" class="form-control" /><span asp-validation-for="FullName" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Biography" class="form-label">Біографія</label><textarea asp-for="Biography" class="form-control" rows="3"></textarea><span asp-validation-for="Biography" class="text-danger"></span></div>
+
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>
+    </form>
+</div>

@@ -1,0 +1,18 @@
+@model CathedralLibrary.Models.LibraryRequest
+@{
+    ViewData["Title"] = "Перегляд — Запити";
+}
+
+<div class="container py-4">
+    <h1>Перегляд запису</h1>
+    <dl class="row">
+        <dt class="col-sm-4">Reader.FullName</dt>
+        <dd class="col-sm-8">@Model.Reader.FullName</dd>
+        <dt class="col-sm-4">Copy.Publication.Title</dt>
+        <dd class="col-sm-8">@Model.Copy.Publication.Title</dd>
+        <dt class="col-sm-4">RequestStatus.Name</dt>
+        <dd class="col-sm-8">@Model.RequestStatus.Name</dd>
+    </dl>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>

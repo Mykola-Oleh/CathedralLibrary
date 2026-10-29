@@ -1,0 +1,12 @@
+workspace:
+  id: a1cb1a71-917a-4051-8670-77dc5df52754
+
+localResources:
+  collections:
+    - ../tests/postman/CathedralLibrary.postman_collection.json
+    - ../bin/Debug/net8.0/tests/postman/CathedralLibrary-Day4.postman_collection.json
+    - ../bin/Debug/net8.0/tests/postman/CathedralLibrary.postman_collection.json
+
+cloudResources:
+  collections:
+    ../postman/collections/CathedralLibrary API checks: cfa73398-5511-4240-b3bd-5b64e2b8b8a9

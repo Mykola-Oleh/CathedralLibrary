@@ -1,0 +1,22 @@
+@model CathedralLibrary.Models.Reader
+@{
+    ViewData["Title"] = "Перегляд — Читачі";
+}
+
+<div class="container py-4">
+    <h1>Перегляд запису</h1>
+    <dl class="row">
+        <dt class="col-sm-4">FullName</dt>
+        <dd class="col-sm-8">@Model.FullName</dd>
+        <dt class="col-sm-4">Faculty</dt>
+        <dd class="col-sm-8">@Model.Faculty</dd>
+        <dt class="col-sm-4">Department</dt>
+        <dd class="col-sm-8">@Model.Department</dd>
+        <dt class="col-sm-4">Position</dt>
+        <dd class="col-sm-8">@Model.Position</dd>
+        <dt class="col-sm-4">Email</dt>
+        <dd class="col-sm-8">@Model.Email</dd>
+    </dl>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+</div>
