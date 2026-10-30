@@ -3,39 +3,48 @@
     ViewData["Title"] = "Читачі";
 }
 <div class="container py-4">
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>Читачі</h1>
-    <a asp-action="Create" class="btn btn-primary">+ Додати</a>
-</div>
-<form method="get" class="d-flex gap-2 mb-3">
-    <input class="form-control" name="search" value="@ViewBag.Search" placeholder="Пошук за назвою або ПІБ" />
-    <button class="btn btn-outline-primary">Шукати</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">Скинути</a>
-</form>
-<div class="table-responsive">
-    <table class="table table-striped table-hover align-middle">
-        <thead>
-            <tr>
-                <th>ПІБ</th><th>Факультет</th><th>Кафедра</th><th>Посада</th><th>Email</th><th>Дії</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Читачі</h1>
+        <a asp-action="Create" class="btn btn-primary">+ Додати</a>
+    </div>
+    <form method="get" class="d-flex gap-2 mb-3">
+        <input class="form-control" name="search" value="@ViewBag.Search" placeholder="Пошук за назвою або ПІБ" />
+        <button class="btn btn-outline-primary">Шукати</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Скинути</a>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
                 <tr>
-                    <td>@item.FullName</td><td>@item.Faculty</td><td>@item.Department</td><td>@item.Position</td><td>@item.Email</td>
-                    <td class="text-nowrap">
-                        <a asp-action="Details" asp-route-id="@item.Id">Перегляд</a> ·
-                        <a asp-action="Edit" asp-route-id="@item.Id">Змінити</a> ·
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">Видалити</a>
-                    </td>
+                    <th>ПІБ</th>
+                    <th>Факультет</th>
+                    <th>Кафедра</th>
+                    <th>Посада</th>
+                    <th>Email</th>
+                    <th>Дії</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
-@if (!Model.Any())
-{
-    <div class="alert alert-info">Записів не знайдено.</div>
-}
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.FullName</td>
+                        <td>@item.Faculty</td>
+                        <td>@item.Department</td>
+                        <td>@item.Position</td>
+                        <td>@item.Email</td>
+                        <td class="text-nowrap">
+                            <a asp-action="Details" asp-route-id="@item.Id">Перегляд</a> ·
+                            <a asp-action="Edit" asp-route-id="@item.Id">Змінити</a> ·
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">Видалити</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Записів не знайдено.</div>
+    }
 </div>

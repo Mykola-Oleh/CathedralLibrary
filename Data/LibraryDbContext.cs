@@ -1,9 +1,10 @@
 using CathedralLibrary.Models;
+using CathedralLibrary.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CathedralLibrary.Data;
 
-public class LibraryDbContext(DbContextOptions<LibraryDbContext> options) : DbContext(options)
+public class LibraryDbContext(DbContextOptions<LibraryDbContext> options, LibraryCache cache) : DbContext(options)
 {
     public DbSet<Publication> Publications => Set<Publication>();
     public DbSet<Author> Authors => Set<Author>();
@@ -75,13 +76,17 @@ public class LibraryDbContext(DbContextOptions<LibraryDbContext> options) : DbCo
     public override int SaveChanges()
     {
         UpdateTimestamps();
-        return base.SaveChanges();
+        var changes = base.SaveChanges();
+        if (changes > 0) cache.Invalidate();
+        return changes;
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         UpdateTimestamps();
-        return base.SaveChangesAsync(cancellationToken);
+        var changes = await base.SaveChangesAsync(cancellationToken);
+        if (changes > 0) cache.Invalidate();
+        return changes;
     }
 
     private void UpdateTimestamps()

@@ -1,18 +1,81 @@
 @model CathedralLibrary.Models.Publication
 @{
-    ViewData["Title"] = "Перегляд — Видання";
+    ViewData["Title"] = Model.Title;
+    var authors = Model.PublicationAuthors.Select(x => x.Author.FullName).ToList();
+    var available = Model.Copies.Count(x => x.CopyStatusId == 1);
 }
-
-<div class="container py-4">
-    <h1>Перегляд запису</h1>
-    <dl class="row">
-        <dt class="col-sm-4">Title</dt>
-        <dd class="col-sm-8">@Model.Title</dd>
-        <dt class="col-sm-4">Year</dt>
-        <dd class="col-sm-8">@Model.Year</dd>
-        <dt class="col-sm-4">PublicationType.Name</dt>
-        <dd class="col-sm-8">@Model.PublicationType.Name</dd>
-    </dl>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
-    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+<section class="bg-light rounded-4 p-4 p-lg-5 mb-4" id="overview">
+    <div class="row align-items-center g-4">
+        <div class="col-md-4 text-center">
+            @if (!string.IsNullOrWhiteSpace(Model.CoverUrl))
+            {
+                <img src="@Model.CoverUrl" alt="Обкладинка видання @Model.Title"
+                     class="img-fluid rounded shadow" style="max-height:380px;object-fit:contain"
+                     referrerpolicy="no-referrer" />
+            }
+            else
+            {
+                <div class="bg-white border rounded-4 p-5 display-1" aria-label="Обкладинка відсутня">📖</div>
+            }
+        </div>
+        <div class="col-md-8">
+            <span class="badge text-bg-primary mb-3">@Model.PublicationType.Name</span>
+            <h1 class="display-5 fw-bold">@Model.Title</h1>
+            <p class="lead">@string.Join(", ", authors.DefaultIfEmpty("Автор не вказаний"))</p>
+            <p class="text-secondary">Рік видання: @Model.Year</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="#description" class="btn btn-primary">Про видання</a>
+                <a href="#copies" class="btn btn-outline-primary">Наявність</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">До каталогу</a>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <section id="description" class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h2 class="h4">Анотація</h2>
+                <p class="mb-0" style="white-space:pre-line">@(string.IsNullOrWhiteSpace(Model.Annotation) ? "Опис поки не додано." : Model.Annotation)</p>
+            </div>
+        </section>
+        <section id="copies" class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h4">Примірники</h2>
+                <p><strong>Усього:</strong> @Model.Copies.Count · <strong>Доступні:</strong> @available</p>
+                <ul class="list-group list-group-flush">
+                    @foreach (var copy in Model.Copies.OrderBy(x => x.CopyNumber))
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Примірник №@copy.CopyNumber</span>
+                            <span class="badge text-bg-secondary">@copy.CopyStatus.Name</span>
+                        </li>
+                    }
+                    @if (!Model.Copies.Any())
+                    {
+                        <li class="list-group-item">Примірників поки немає.</li>
+                    }
+                </ul>
+            </div>
+        </section>
+    </div>
+    <aside class="col-lg-4">
+        <div class="card shadow-sm sticky-top" style="top:1rem">
+            <div class="card-body">
+                <h2 class="h5">Інформація</h2>
+                <dl>
+                    <dt>Тип</dt>
+                    <dd>@Model.PublicationType.Name</dd>
+                    <dt>Рік</dt>
+                    <dd>@Model.Year</dd>
+                    <dt>Автори</dt>
+                    <dd>@string.Join(", ", authors.DefaultIfEmpty("Не вказані"))</dd>
+                </dl>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary w-100">Редагувати</a>
+                }
+            </div>
+        </div>
+    </aside>
 </div>

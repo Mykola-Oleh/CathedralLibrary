@@ -1,21 +1,71 @@
-@foreach (var item in new[]
-{
-    ("Автори", "Authors"),
-    ("Читачі", "Readers"),
-    ("Примірники", "Copies"),
-    ("Запити", "Requests")
-})
-{
-    <div class="col">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h5">@item.Item1</h2>
-                <a asp-controller="@item.Item2"
-                   asp-action="Index"
-                   class="stretched-link">
-                    Відкрити розділ
-                </a>
-            </div>
+@model CathedralLibrary.ViewModels.HomeDashboardViewModel
+@{
+    ViewData["Title"] = "Головна";
+}
+<section class="library-hero mb-4">
+    <div class="library-hero-content">
+        <span class="hero-eyebrow">ЕЛЕКТРОННИЙ КАТАЛОГ КАФЕДРИ</span>
+        <h1>Кафедральна<br />бібліотека</h1>
+        <p>Зручний облік видань, авторів, читачів і примірників в одній інформаційній системі.</p>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <a asp-controller="Publications" asp-action="Index" class="btn btn-gold btn-lg">Переглянути видання →</a>
+            <a asp-controller="Statistics" asp-action="Index" class="btn btn-outline-light btn-lg">Статистика</a>
         </div>
     </div>
-}
+</section>
+<section aria-label="Показники бібліотеки" class="mb-5">
+    <div class="row g-3">
+        <div class="col-6 col-lg"><div class="metric-card"><div class="metric-icon">📚</div><span>Видання</span><strong>@Model.Publications</strong></div></div>
+        <div class="col-6 col-lg"><div class="metric-card"><div class="metric-icon">✍️</div><span>Автори</span><strong>@Model.Authors</strong></div></div>
+        <div class="col-6 col-lg"><div class="metric-card"><div class="metric-icon">👥</div><span>Читачі</span><strong>@Model.Readers</strong></div></div>
+        <div class="col-6 col-lg"><div class="metric-card"><div class="metric-icon">📖</div><span>Примірники</span><strong>@Model.Copies</strong></div></div>
+        <div class="col-6 col-lg"><div class="metric-card"><div class="metric-icon">🗂️</div><span>Запити</span><strong>@Model.Requests</strong></div></div>
+    </div>
+</section>
+<section class="mb-5">
+    <div class="section-heading d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div><span class="eyebrow">НАВІГАЦІЯ</span><h2>Розділи бібліотеки</h2></div>
+        <a asp-controller="Statistics" asp-action="Index" class="btn btn-outline-primary">Аналітика →</a>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-4"><a class="module-card" asp-controller="Publications" asp-action="Index"><span class="module-icon">📚</span><strong>Видання</strong><small>Каталог книжок та публікацій</small><span class="module-arrow">↗</span></a></div>
+        <div class="col-md-4"><a class="module-card" asp-controller="Authors" asp-action="Index"><span class="module-icon">✍️</span><strong>Автори</strong><small>Відомості про авторів</small><span class="module-arrow">↗</span></a></div>
+        <div class="col-md-4"><a class="module-card" asp-controller="Readers" asp-action="Index"><span class="module-icon">👥</span><strong>Читачі</strong><small>Облік читачів бібліотеки</small><span class="module-arrow">↗</span></a></div>
+        <div class="col-md-4"><a class="module-card" asp-controller="Copies" asp-action="Index"><span class="module-icon">📖</span><strong>Примірники</strong><small>Наявність та стан фонду</small><span class="module-arrow">↗</span></a></div>
+        <div class="col-md-4"><a class="module-card" asp-controller="Requests" asp-action="Index"><span class="module-icon">🗂️</span><strong>Запити</strong><small>Видача та повернення</small><span class="module-arrow">↗</span></a></div>
+        <div class="col-md-4"><a class="module-card" asp-controller="Statistics" asp-action="Index"><span class="module-icon">📊</span><strong>Статистика</strong><small>Діаграми й показники</small><span class="module-arrow">↗</span></a></div>
+    </div>
+</section>
+<section class="mb-5">
+    <div class="section-heading d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div><span class="eyebrow">КАТАЛОГ</span><h2>Нещодавно додані видання</h2></div>
+        <a asp-controller="Publications" asp-action="Index" class="btn btn-outline-primary">Усі видання →</a>
+    </div>
+    <div class="row g-3">
+        @foreach (var book in Model.RecentPublications)
+        {
+            <div class="col-sm-6 col-lg-4 col-xl">
+                <a asp-controller="Publications" asp-action="Details" asp-route-id="@book.Id" class="book-card">
+                    @if (!string.IsNullOrWhiteSpace(book.CoverUrl))
+                    {
+                        <img src="@book.CoverUrl" alt="Обкладинка @book.Title" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="book-placeholder">📖</div>
+                    }
+                    <div class="book-card-body">
+                        <span class="book-type">@book.PublicationType.Name</span>
+                        <strong>@book.Title</strong>
+                        <small>@string.Join(", ", book.PublicationAuthors.Select(a => a.Author.FullName))</small>
+                        <span class="text-secondary small">@book.Year</span>
+                    </div>
+                </a>
+            </div>
+        }
+        @if (!Model.RecentPublications.Any())
+        {
+            <div class="col-12"><div class="empty-state">У каталозі ще немає видань. <a asp-controller="Publications" asp-action="Create">Додати перше</a></div></div>
+        }
+    </div>
+</section>

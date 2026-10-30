@@ -8,11 +8,41 @@
     <h1>@ViewData["Title"]</h1>
     <form method="post" asp-antiforgery="true" class="col-lg-7">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<div class="mb-3"><label asp-for="PublicationId" class="form-label">Видання</label><select asp-for="PublicationId" asp-items="ViewBag.Publications" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="PublicationId" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="CopyNumber" class="form-label">Номер примірника</label><input asp-for="CopyNumber" type="number" class="form-control" /><span asp-validation-for="CopyNumber" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="CopyStatusId" class="form-label">Стан</label><select asp-for="CopyStatusId" asp-items="ViewBag.Statuses" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="CopyStatusId" class="text-danger"></span></div>
+        <div class="mb-3">
+            <label asp-for="PublicationId" class="form-label">Видання</label><select asp-for="PublicationId" id="publication-autocomplete" class="form-select">
+            @if (ViewBag.SelectedPublication is CathedralLibrary.Models.Publication selected)
+            {
+                <option value="@selected.Id" selected="selected">@selected.Title</option>
+            }
+        </select><span asp-validation-for="PublicationId" class="text-danger"></span>
+    </div>
+    <div class="mb-3"><label asp-for="CopyNumber" class="form-label">Номер примірника</label><input asp-for="CopyNumber" type="number" class="form-control" /><span asp-validation-for="CopyNumber" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="CopyStatusId" class="form-label">Стан</label><select asp-for="CopyStatusId" asp-items="ViewBag.Statuses" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="CopyStatusId" class="text-danger"></span></div>
 
-        <button type="submit" class="btn btn-primary">Зберегти</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>
-    </form>
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>
+</form>
 </div>
+
+
+@section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(function() {
+            $("#publication-autocomplete").select2({
+                width: "100%",
+                placeholder: "Пошук видання від 3 символів",
+                minimumInputLength: 3,
+                ajax: {
+                    url: '@Url.Action("Publications", "Lookup")',
+                    dataType: "json",
+                    delay: 300,
+                    data: function(params) { return { term: params.term }; },
+                    processResults: function(data) { return { results: data }; }
+                }
+            });
+        });
+    </script>
+}

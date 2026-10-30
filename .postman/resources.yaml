@@ -7,6 +7,10 @@ localResources:
     - ../bin/Debug/net8.0/tests/postman/CathedralLibrary-Day4.postman_collection.json
     - ../bin/Debug/net8.0/tests/postman/CathedralLibrary.postman_collection.json
 
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
 cloudResources:
   collections:
-    ../postman/collections/CathedralLibrary API checks: cfa73398-5511-4240-b3bd-5b64e2b8b8a9
+    ../postman/collections/CathedralLibrary API checks Copy: d40dffbf-0811-44ff-bab6-89f4cda6071a
+    ../postman/collections/CathedralLibrary API checks Copy 2: 34f0d710-b5be-4003-a974-ebddabcbcaa2
+    ../postman/collections/CathedralLibrary API checks: 1ee950ed-4a8f-4f98-9888-4d9e20174f96

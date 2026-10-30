@@ -29,7 +29,8 @@ public class PublicationsController(LibraryDbContext db) : Controller
     private async Task LoadLists(PublicationForm form)
     {
         ViewBag.Types = new SelectList(await db.PublicationTypes.AsNoTracking().OrderBy(x => x.Name).ToListAsync(), "Id", "Name", form.PublicationTypeId);
-        ViewBag.Authors = await db.Authors.AsNoTracking().OrderBy(x => x.FullName).ToListAsync();
+        ViewBag.SelectedAuthors = await db.Authors.AsNoTracking()
+            .Where(x => form.AuthorIds.Contains(x.Id)).OrderBy(x => x.FullName).ToListAsync();
     }
     [Authorize]
     public async Task<IActionResult> Create()
@@ -43,7 +44,8 @@ public class PublicationsController(LibraryDbContext db) : Controller
         if (ids.Length != await db.Authors.CountAsync(x => ids.Contains(x.Id))) ModelState.AddModelError(nameof(form.AuthorIds), "Один із авторів не існує");
         return ModelState.IsValid;
     }
-    [Authorize] [HttpPost, ValidateAntiForgeryToken]
+    [Authorize]
+    [HttpPost, ValidateAntiForgeryToken]
     [Authorize]
     public async Task<IActionResult> Create(PublicationForm form)
     {
@@ -63,7 +65,8 @@ public class PublicationsController(LibraryDbContext db) : Controller
         var form = new PublicationForm { Title = entity.Title, Annotation = entity.Annotation, Year = entity.Year, CoverUrl = entity.CoverUrl, PublicationTypeId = entity.PublicationTypeId, AuthorIds = entity.PublicationAuthors.Select(x => x.AuthorId).ToList() };
         await LoadLists(form); return View(form);
     }
-    [Authorize] [HttpPost, ValidateAntiForgeryToken]
+    [Authorize]
+    [HttpPost, ValidateAntiForgeryToken]
     [Authorize]
     public async Task<IActionResult> Edit(int id, PublicationForm form)
     {
@@ -84,13 +87,13 @@ public class PublicationsController(LibraryDbContext db) : Controller
         var entity = await db.Publications.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         return entity is null ? NotFound() : View(entity);
     }
-    [Authorize] [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    [Authorize]
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     [Authorize]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var entity = await db.Publications.FindAsync(id);
         if (entity is null) return NotFound();
-        // Do not delete publication with copies: preserve circulation history.
         if (await db.Copies.AnyAsync(x => x.PublicationId == id)) TempData["Error"] = "Спочатку вилучіть примірники видання";
         else
         {

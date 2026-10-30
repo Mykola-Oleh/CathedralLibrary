@@ -13,11 +13,41 @@
 <div class="mb-3"><label asp-for="Year" class="form-label">Рік</label><input asp-for="Year" type="number" class="form-control" /><span asp-validation-for="Year" class="text-danger"></span></div>
 <div class="mb-3"><label asp-for="CoverUrl" class="form-label">Посилання на обкладинку</label><input asp-for="CoverUrl" type="url" class="form-control" /><span asp-validation-for="CoverUrl" class="text-danger"></span></div>
 <div class="mb-3"><label asp-for="PublicationTypeId" class="form-label">Тип видання</label><select asp-for="PublicationTypeId" asp-items="ViewBag.Types" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="PublicationTypeId" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="AuthorIds" class="form-label">Автори (можна обрати кількох)</label>@foreach (var author in (IEnumerable<CathedralLibrary.Models.Author>)ViewBag.Authors) {
-<div class="form-check"><input class="form-check-input" type="checkbox" name="AuthorIds" value="@author.Id" id="author-@author.Id" checked="@(Model.AuthorIds.Contains(author.Id))" /><label class="form-check-label" for="author-@author.Id">@author.FullName</label></div>
-}<span asp-validation-for="AuthorIds" class="text-danger"></span></div>
+<div class="mb-3">
+            <label asp-for="AuthorIds" class="form-label">Автори (пошук від 3 символів)</label>
+            <select id="authors-autocomplete" name="AuthorIds" class="form-select" multiple="multiple">
+                @foreach (var author in (IEnumerable<CathedralLibrary.Models.Author>)ViewBag.SelectedAuthors)
+                {
+                    <option value="@author.Id" selected="selected">@author.FullName</option>
+                }
+            </select>
+            <span asp-validation-for="AuthorIds" class="text-danger"></span>
+        </div>
 
         <button type="submit" class="btn btn-primary">Зберегти</button>
         <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>
     </form>
 </div>
+
+
+@section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(function () {
+            $("#authors-autocomplete").select2({
+                width: "100%",
+                placeholder: "Введіть принаймні 3 символи",
+                minimumInputLength: 3,
+                ajax: {
+                    url: '@Url.Action("Authors", "Lookup")',
+                    dataType: "json",
+                    delay: 300,
+                    data: function (params) { return { term: params.term }; },
+                    processResults: function (data) { return { results: data }; }
+                }
+            });
+        });
+    </script>
+}

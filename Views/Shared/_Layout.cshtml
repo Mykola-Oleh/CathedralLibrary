@@ -1,83 +1,66 @@
 <!DOCTYPE html>
 <html lang="uk">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>
-            @ViewData["Title"] — Кафедральна бібліотека
-        </title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    </head>
-    <body>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <div class="container">
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                        📚 Кафедральна бібліотека
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-label="Відкрити меню">
-                        <span class="navbar-toggler-icon">
-                        </span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="mainMenu">
-                        <div class="navbar-nav">
-                            <a class="nav-link" asp-controller="Publications" asp-action="Index">
-                                Видання
-                            </a>
-                            <a class="nav-link" asp-controller="Authors" asp-action="Index">
-                                Автори
-                            </a>
-                            <a class="nav-link" asp-controller="Readers" asp-action="Index">
-                                Читачі
-                            </a>
-                            <a class="nav-link" asp-controller="Copies" asp-action="Index">
-                                Примірники
-                            </a>
-                            <a class="nav-link" asp-controller="Requests" asp-action="Index">
-                                Запити
-                            </a>
-                        </div>
-                        <div class="ms-auto d-flex align-items-center gap-2">
-                            @if (User.Identity?.IsAuthenticated == true)
-                            {
-                                <span class="text-white small">@User.Identity.Name</span>
-                                <form asp-controller="Account" asp-action="Logout" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button class="btn btn-outline-light btn-sm" type="submit">Вийти</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Login">Увійти через Google</a>
-                            }
-                        </div>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] — Кафедральна бібліотека</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-xl navbar-dark">
+            <div class="container-fluid page-shell">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark">♜</span><span>Кафедральна бібліотека</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Відкрити меню"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="mainMenu">
+                    <div class="navbar-nav ms-xl-4">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Головна</a>
+                        <a class="nav-link" asp-controller="Publications" asp-action="Index">Видання</a>
+                        <a class="nav-link" asp-controller="Authors" asp-action="Index">Автори</a>
+                        <a class="nav-link" asp-controller="Readers" asp-action="Index">Читачі</a>
+                        <a class="nav-link" asp-controller="Copies" asp-action="Index">Примірники</a>
+                        <a class="nav-link" asp-controller="Requests" asp-action="Index">Запити</a>
+                        <a class="nav-link" asp-controller="Statistics" asp-action="Index">Статистика</a>
+                    </div>
+                    <div class="ms-auto d-flex flex-wrap align-items-center gap-2 user-actions">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <span class="small text-white-50">@User.Identity.Name</span>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-outline-light btn-sm" type="submit">Вийти</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Login">Увійти через Google</a>
+                        }
                     </div>
                 </div>
-            </nav>
-        </header>
-        <main role="main" class="container py-3">
-            @if (TempData["Success"] is string success)
-            {
-                <div class="alert alert-success">
-                    @success
-                </div>
-            }
-            @if (TempData["Error"] is string error)
-            {
-                <div class="alert alert-danger">
-                    @error
-                </div>
-            }
-            @RenderBody()
-        </main>
-        <footer class="border-top text-muted py-3 mt-5">
-            <div class="container">
-                Навчальний проєкт · ASP.NET Core MVC · PostgreSQL
             </div>
-        </footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-        </script>
-        @await RenderSectionAsync("Scripts", required: false)
-    </body>
+        </nav>
+    </header>
+    <main role="main" class="page-shell main-content">
+        @if (TempData["Success"] is string success)
+        {
+            <div class="alert alert-success mt-3" role="status">@success</div>
+        }
+        @if (TempData["Error"] is string error)
+        {
+            <div class="alert alert-danger mt-3" role="alert">@error</div>
+        }
+        @RenderBody()
+    </main>
+    <footer class="site-footer mt-auto">
+        <div class="page-shell d-flex flex-wrap justify-content-between gap-2">
+            <span>© @DateTime.Now.Year Кафедральна бібліотека</span>
+            <span>Навчальний проєкт · ASP.NET Core MVC · PostgreSQL</span>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
 </html>

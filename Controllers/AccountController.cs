@@ -15,7 +15,7 @@ public class AccountController(IConfiguration config) : Controller
         if (User.Identity?.IsAuthenticated == true) return LocalRedirect(SafeUrl(returnUrl));
         if (string.IsNullOrWhiteSpace(config["Authentication:Google:ClientId"]) ||
             string.IsNullOrWhiteSpace(config["Authentication:Google:ClientSecret"]))
-            return Problem("Google OAuth не налаштовано. Див. README-Day4.md", statusCode: 503);
+            return Problem("Google OAuth не налаштовано", statusCode: 503);
         return Challenge(new AuthenticationProperties { RedirectUri = SafeUrl(returnUrl) }, GoogleDefaults.AuthenticationScheme);
     }
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 using CathedralLibrary.Data;
+using CathedralLibrary.Services;
 using CathedralLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ public sealed record PublicationInput(
     List<int>? AuthorIds);
 
 [Route("api/publications")]
-public sealed class PublicationsApiController(LibraryDbContext db) : ApiControllerBase
+public sealed class PublicationsApiController(LibraryDbContext db, LibraryCache cache) : ApiControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int skip = 0, [FromQuery] int limit = 10, [FromQuery] string? search = null, CancellationToken ct = default)
@@ -25,12 +26,22 @@ public sealed class PublicationsApiController(LibraryDbContext db) : ApiControll
         if (!string.IsNullOrWhiteSpace(search))
             query = query.Where(x => EF.Functions.ILike(x.Title, "%" + search.Trim() + "%"));
         if (skip < 0 || limit is < 1 or > 100) return BadRequest(new { error = "skip >= 0; limit від 1 до 100" });
-        var total = await query.CountAsync(ct);
-        var items = await query.OrderBy(x => x.Id).Skip(skip).Take(limit)
-            .Select(x => new { x.Id, x.Title, x.Annotation, x.Year, x.CoverUrl, x.PublicationTypeId, AuthorIds = x.PublicationAuthors.Select(a => a.AuthorId).ToList(), x.CreatedAt, x.UpdatedAt })
-            .ToListAsync(ct);
-        var next = skip + items.Count < total ? Url.Action(nameof(GetAll), values: new { skip = skip + items.Count, limit, search }) : null;
-        return Ok(new { items, skip, limit, total, nextLink = next });
+        var version = cache.Version;
+        var cacheKey = $"publications:list:{skip}:{limit}:{search?.Trim().ToLowerInvariant()}";
+        var result = await cache.GetOrCreateAsync(cacheKey, async () =>
+        {
+            var total = await query.CountAsync(ct);
+            var items = await query.OrderBy(x => x.Id).Skip(skip).Take(limit)
+                .Select(x => new { x.Id, x.Title, x.Annotation, x.Year, x.CoverUrl, x.PublicationTypeId,
+                    AuthorIds = x.PublicationAuthors.Select(a => a.AuthorId).ToList(), x.CreatedAt, x.UpdatedAt })
+                .ToListAsync(ct);
+            var next = skip + items.Count < total
+                ? Url.Action(nameof(GetAll), values: new { skip = skip + items.Count, limit, search })
+                : null;
+            return new { items, skip, limit, total, nextLink = next };
+        });
+        Response.Headers["X-Library-Cache-Version"] = version.ToString();
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]

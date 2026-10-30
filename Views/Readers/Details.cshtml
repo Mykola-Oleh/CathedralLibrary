@@ -1,22 +1,35 @@
 @model CathedralLibrary.Models.Reader
 @{
-    ViewData["Title"] = "Перегляд — Читачі";
+    ViewData["Title"] = "Читач — деталі";
 }
-
 <div class="container py-4">
-    <h1>Перегляд запису</h1>
-    <dl class="row">
-        <dt class="col-sm-4">FullName</dt>
-        <dd class="col-sm-8">@Model.FullName</dd>
-        <dt class="col-sm-4">Faculty</dt>
-        <dd class="col-sm-8">@Model.Faculty</dd>
-        <dt class="col-sm-4">Department</dt>
-        <dd class="col-sm-8">@Model.Department</dd>
-        <dt class="col-sm-4">Position</dt>
-        <dd class="col-sm-8">@Model.Position</dd>
-        <dt class="col-sm-4">Email</dt>
-        <dd class="col-sm-8">@Model.Email</dd>
-    </dl>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
-    <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+    <div class="mb-4">
+        <a asp-action="Index" class="text-decoration-none small">← До списку</a>
+        <h1 class="mt-2">Читач: @Model.FullName</h1>
+        <p class="text-secondary">Детальна інформація про запис у бібліотеці.</p>
+    </div>
+    <div class="card detail-panel">
+        <div class="card-body p-4 p-lg-5">
+            <h2 class="h5 mb-4">Основні відомості</h2>
+            <dl class="row g-3">
+                <dt class="col-sm-4">Повне ім’я</dt>
+                <dd class="col-sm-8">@Model.FullName</dd>
+                <dt class="col-sm-4">Факультет</dt>
+                <dd class="col-sm-8">@Model.Faculty</dd>
+                <dt class="col-sm-4">Кафедра</dt>
+                <dd class="col-sm-8">@Model.Department</dd>
+                <dt class="col-sm-4">Посада</dt>
+                <dd class="col-sm-8">@Model.Position</dd>
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@Model.Email</dd>
+            </dl>
+            <div class="d-flex gap-2 flex-wrap mt-4">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
+                }
+                <a asp-action="Index" class="btn btn-outline-secondary">Назад до списку</a>
+            </div>
+        </div>
+    </div>
 </div>

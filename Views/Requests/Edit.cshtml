@@ -8,10 +8,10 @@
     <h1>@ViewData["Title"]</h1>
     <form method="post" asp-antiforgery="true" class="col-lg-7">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<div class="mb-3"><label asp-for="ReaderId" class="form-label">Читач</label><select asp-for="ReaderId" asp-items="ViewBag.Readers" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="ReaderId" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="CopyId" class="form-label">Примірник</label><select asp-for="CopyId" asp-items="ViewBag.Copies" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="CopyId" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="RequestStatusId" class="form-label">Статус</label><select asp-for="RequestStatusId" asp-items="ViewBag.Statuses" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="RequestStatusId" class="text-danger"></span></div>
-<div class="mb-3"><label asp-for="ReturnedAt" class="form-label">Дата повернення</label><input asp-for="ReturnedAt" type="date" class="form-control" /><span asp-validation-for="ReturnedAt" class="text-danger"></span></div>
+        <div class="mb-3"><label asp-for="ReaderId" class="form-label">Читач</label><select asp-for="ReaderId" asp-items="ViewBag.Readers" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="ReaderId" class="text-danger"></span></div>
+        <div class="mb-3"><label asp-for="CopyId" class="form-label">Примірник</label><select asp-for="CopyId" asp-items="ViewBag.Copies" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="CopyId" class="text-danger"></span></div>
+        <div class="mb-3"><label asp-for="RequestStatusId" class="form-label">Статус</label><select asp-for="RequestStatusId" asp-items="ViewBag.Statuses" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="RequestStatusId" class="text-danger"></span></div>
+        <div class="mb-3"><label asp-for="ReturnedAt" class="form-label">Дата повернення</label><input asp-for="ReturnedAt" type="date" class="form-control" /><span asp-validation-for="ReturnedAt" class="text-danger"></span></div>
 
         <button type="submit" class="btn btn-primary">Зберегти</button>
         <a asp-action="Index" class="btn btn-outline-secondary">Скасувати</a>

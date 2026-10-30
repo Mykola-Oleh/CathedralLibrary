@@ -1,0 +1,50 @@
+@model CathedralLibrary.ViewModels.StatisticsViewModel
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Статистика бібліотеки";
+}
+<section class="container py-4">
+    <h1 class="mb-4">Статистика бібліотеки</h1>
+    <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col"><div class="card p-3"><strong>Видання</strong><span class="fs-2">@Model.Publications</span></div></div>
+        <div class="col"><div class="card p-3"><strong>Автори</strong><span class="fs-2">@Model.Authors</span></div></div>
+        <div class="col"><div class="card p-3"><strong>Читачі</strong><span class="fs-2">@Model.Readers</span></div></div>
+        <div class="col"><div class="card p-3"><strong>Примірники</strong><span class="fs-2">@Model.Copies</span></div></div>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h2 class="h5">Видання за типами</h2>
+                <div style="height:300px"><canvas id="typesChart" aria-label="Видання за типами" role="img"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h2 class="h5">Примірники за статусами</h2>
+                <div style="height:300px"><canvas id="statusChart" aria-label="Примірники за статусами" role="img"></canvas></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script>
+        new Chart(document.getElementById("typesChart"), {
+            type: "bar",
+            data: {
+                labels: @Html.Raw(JsonSerializer.Serialize(Model.TypeNames)),
+                datasets: [{ label: "Кількість видань", data: @Html.Raw(JsonSerializer.Serialize(Model.TypeCounts)), backgroundColor: "#0d6efd" }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+        });
+        new Chart(document.getElementById("statusChart"), {
+            type: "doughnut",
+            data: {
+                labels: @Html.Raw(JsonSerializer.Serialize(Model.StatusNames)),
+                datasets: [{ label: "Кількість примірників", data: @Html.Raw(JsonSerializer.Serialize(Model.StatusCounts)), backgroundColor: ["#198754", "#ffc107", "#dc3545", "#0dcaf0"] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    </script>
+}

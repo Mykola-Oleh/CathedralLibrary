@@ -18,7 +18,9 @@ public class CopiesController(LibraryDbContext db) : Controller
     }
     private async Task LoadLists(CopyForm form)
     {
-        ViewBag.Publications = new SelectList(await db.Publications.AsNoTracking().OrderBy(x => x.Title).ToListAsync(), "Id", "Title", form.PublicationId);
+        ViewBag.SelectedPublication = form.PublicationId > 0
+            ? await db.Publications.AsNoTracking().FirstOrDefaultAsync(x => x.Id == form.PublicationId)
+            : null;
         ViewBag.Statuses = new SelectList(await db.CopyStatuses.AsNoTracking().OrderBy(x => x.Id).ToListAsync(), "Id", "Name", form.CopyStatusId);
     }
     private async Task Validate(CopyForm form, int? id = null)
