@@ -10,9 +10,13 @@ test('publications page is available', async ({ page }) => {
   await expect(page.locator('body')).toContainText('Видання');
 });
 
-test('unauthenticated create redirects to login', async ({ page }) => {
-  await page.goto('/Authors/Create');
-  await expect(page).toHaveURL(/account\/login/i);
+test('unauthenticated create redirects to Google login', async ({ page }) => {
+    await page.goto('/Authors/Create');
+
+    await expect(page).toHaveURL(
+        /accounts\.google\.com/i,
+        { timeout: 15000 }
+    );
 });
 
 test('unauthenticated API mutation is denied', async ({ request }) => {
