@@ -3,7 +3,7 @@ name: Build and Deploy CathedralLibrary to AWS
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -72,12 +72,12 @@ jobs:
           port: 22
           envs: IMAGE
           script: |
-  set -e
-  cd /opt/cathedral-library
+           set -e
+           cd /opt/cathedral-library
 
-  export WEB_IMAGE="$(echo "$IMAGE" | tr '[:upper:]' '[:lower:]')"
+           export WEB_IMAGE="$(echo "$IMAGE" | tr '[:upper:]' '[:lower:]')"
 
-  docker compose pull
-  docker compose up -d --remove-orphans
+           docker compose pull
+           docker compose up -d --remove-orphans
 
-  docker image prune -f
+           docker image prune -f
