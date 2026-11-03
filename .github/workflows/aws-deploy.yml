@@ -53,31 +53,3 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.image.outputs.name }}
-
-  deploy:
-    name: Deploy to AWS EC2
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-
-    steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1
-        env:
-          IMAGE: ghcr.io/${{ github.repository }}:latest
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          envs: IMAGE
-          script: |
-           set -e
-           cd /opt/cathedral-library
-
-           export WEB_IMAGE="$(echo "$IMAGE" | tr '[:upper:]' '[:lower:]')"
-
-           docker compose pull
-           docker compose up -d --remove-orphans
-
-           docker image prune -f
