@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CathedralLibrary.Data;
 
-public class LibraryDbContext(DbContextOptions<LibraryDbContext> options, LibraryCache cache) : DbContext(options)
+public class LibraryDbContext(DbContextOptions<LibraryDbContext> options, LibraryCache cache, LibraryEventFeed events) : DbContext(options)
 {
     public DbSet<Publication> Publications => Set<Publication>();
     public DbSet<Author> Authors => Set<Author>();
@@ -77,7 +77,7 @@ public class LibraryDbContext(DbContextOptions<LibraryDbContext> options, Librar
     {
         UpdateTimestamps();
         var changes = base.SaveChanges();
-        if (changes > 0) cache.Invalidate();
+        if (changes > 0) { cache.Invalidate(); events.Publish(); }
         return changes;
     }
 
@@ -85,7 +85,7 @@ public class LibraryDbContext(DbContextOptions<LibraryDbContext> options, Librar
     {
         UpdateTimestamps();
         var changes = await base.SaveChangesAsync(cancellationToken);
-        if (changes > 0) cache.Invalidate();
+        if (changes > 0) { cache.Invalidate(); events.Publish(); }
         return changes;
     }
 

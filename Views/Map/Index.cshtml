@@ -1,0 +1,34 @@
+@{ ViewData["Title"] = "Мапа бібліотек"; }
+<h1>Мапа бібліотечних локацій</h1>
+<p class="text-secondary">Динамічні маркери та фільтрація за категорією. Додайте реальні координати до конфігурації LibraryLocations.</p>
+<div class="d-flex gap-2 mb-3"><label for="category">Категорія:</label><select id="category" class="form-select" style="max-width:250px"><option value="">Усі</option></select></div>
+<div id="map" style="height:480px;border-radius:14px" role="region" aria-label="Мапа бібліотек"></div>
+<div id="map-count" class="small text-secondary mt-2"></div>
+@section Scripts {
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('map').setView([49, 31], 6);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
+const markers = L.layerGroup().addTo(map);
+let locations = [];
+async function loadLocations() {
+ const response = await fetch('/api/library-locations'); if (!response.ok) return;
+ locations = await response.json();
+ const select = document.getElementById('category');
+ [...new Set(locations.map(x => x.category))].sort().forEach(cat => { const option = new Option(cat, cat); select.add(option); });
+ update();
+}
+function update() {
+ markers.clearLayers();
+ const category = document.getElementById('category').value;
+ const visible = locations.filter(x => !category || x.category === category);
+ const bounds = [];
+ for (const loc of visible) { const marker = L.marker([loc.latitude, loc.longitude]).addTo(markers); const popup = document.createElement("span"); popup.textContent = loc.name; marker.bindPopup(popup); bounds.push([loc.latitude, loc.longitude]); }
+ if (bounds.length) map.fitBounds(bounds, { padding: [25, 25], maxZoom: 13 });
+ document.getElementById('map-count').textContent = `Показано локацій: ${visible.length}`;
+}
+document.getElementById('category').addEventListener('change', update);
+loadLocations();
+</script>
+}

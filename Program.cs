@@ -8,8 +8,12 @@ using Microsoft.AspNetCore.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient("openlibrary", client => { client.BaseAddress = new Uri("https://openlibrary.org/"); client.Timeout = TimeSpan.FromSeconds(10); });
+builder.Services.AddHttpClient("hubspot", client => { client.BaseAddress = new Uri("https://api.hubapi.com/"); client.Timeout = TimeSpan.FromSeconds(10); });
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<LibraryCache>();
+builder.Services.AddSingleton<LibraryEventFeed>();
+builder.Services.AddSingleton<LucenePublicationSearch>();
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("LibraryDatabase")));
 
@@ -51,6 +55,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseWebSockets();
+app.Map("/ws/library", LibraryWebSocketHandler.Handle);
 app.UseAuthentication();
 app.Use(async (context, next) =>
 {
@@ -80,6 +86,12 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+if (app.Configuration.GetValue<bool>("Database:AutoMigrate"))
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    var db = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+    await db.Database.MigrateAsync();
+}
 await LibraryDbSeeder.SeedAsync(app.Services);
 
 app.Run();

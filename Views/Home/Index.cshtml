@@ -2,7 +2,13 @@
 @{
     ViewData["Title"] = "Головна";
 }
-<section class="library-hero mb-4">
+@{
+    var cdnHero = Context.RequestServices.GetRequiredService<IConfiguration>()["StaticContent:HeroCdnUrl"];
+    var heroStyle = Uri.TryCreate(cdnHero, UriKind.Absolute, out var cdnUri) && cdnUri.Scheme == Uri.UriSchemeHttps
+        ? $"background-image:linear-gradient(90deg,rgba(16,27,42,.97) 0%,rgba(20,32,48,.9) 53%,rgba(20,32,48,.52) 100%),url('{cdnUri.AbsoluteUri}')"
+        : null;
+}
+<section class="library-hero mb-4" style="@heroStyle">
     <div class="library-hero-content">
         <span class="hero-eyebrow">ЕЛЕКТРОННИЙ КАТАЛОГ КАФЕДРИ</span>
         <h1>Кафедральна<br />бібліотека</h1>

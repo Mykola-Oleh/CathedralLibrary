@@ -1,0 +1,4 @@
+Transport,DurationSeconds,NumberOfChanges,HTTPRequests,BytesTransferred,MeanLatencyMs,PeakConnections,Notes
+WebSocket,,,,,,,
+LongPolling,,,,,,,
+AdaptivePolling,,,,,,,

@@ -1,0 +1,11 @@
+**/bin
+**/obj
+**/.vs
+**/.git
+**/node_modules
+**/test-results
+**/playwright-report
+**/*.user
+**/*.suo
+**/.env
+**/secrets*

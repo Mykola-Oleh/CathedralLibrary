@@ -79,3 +79,11 @@
         </div>
     </aside>
 </div>
+
+@section Scripts {
+    <script>
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', 'publication_view', { publication_id: '@Model.Id' });
+        }
+    </script>
+}

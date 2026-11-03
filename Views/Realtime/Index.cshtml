@@ -1,0 +1,9 @@
+@{ ViewData["Title"] = "Моніторинг змін"; }
+<section class="container py-4">
+<h1>Моніторинг змін бібліотеки</h1>
+<p class="text-secondary">Порівняння WebSocket, Long Polling та періодичного опитування. Події надходять після змін у базі даних.</p>
+<div class="row g-3 mb-3"><div class="col-md-4"><label for="mode" class="form-label">Транспорт</label><select id="mode" class="form-select"><option value="ws">WebSocket</option><option value="long">Long Polling</option><option value="poll">Adaptive Polling</option></select></div><div class="col-md-8"><div class="card p-3"><span id="connection">Підключення...</span><span id="metrics" class="small text-secondary"></span></div></div></div>
+<div class="card p-3"><h2 class="h5">Події</h2><ul id="events" class="list-group list-group-flush" aria-live="polite"></ul></div>
+<p class="small text-secondary mt-3">Для порівняння відкрийте DevTools → Network і змініть дані бібліотеки в іншій вкладці. Запишіть кількість HTTP-запитів, переданих байтів та затримку отримання події для кожного режиму.</p>
+</section>
+@section Scripts { <script src="~/js/realtime.js" asp-append-version="true"></script> }
