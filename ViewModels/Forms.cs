@@ -22,6 +22,7 @@ public class PublicationForm
     [StringLength(3000)] public string? Annotation { get; set; }
     [Range(1450, 2100, ErrorMessage = "Рік має бути від 1450 до 2100")] public int Year { get; set; } = DateTime.UtcNow.Year;
     [Url(ErrorMessage = "Вкажіть повне URL-посилання"), StringLength(500)] public string? CoverUrl { get; set; }
+    public IFormFile? CoverFile { get; set; }
     [Range(1, int.MaxValue, ErrorMessage = "Оберіть тип видання")] public int PublicationTypeId { get; set; }
     public List<int> AuthorIds { get; set; } = new();
 }

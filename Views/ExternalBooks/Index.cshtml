@@ -1,0 +1,38 @@
+@{ ViewData["Title"] = "Open Library API"; }
+<div class="container py-4">
+  <h1>Пошук книжок у Open Library</h1>
+  <p class="text-muted">Результати надходять із openlibrary.org</p>
+  <form id="external-form" class="d-flex gap-2 mb-3">
+    <input id="external-title" class="form-control" minlength="3" maxlength="120" required placeholder="Наприклад: Clean Code" />
+    <button class="btn btn-primary">Знайти</button>
+  </form>
+  <div id="external-status" role="status"></div>
+  <div id="external-results" class="row g-3"></div>
+  <p class="mt-3 small">API: <code>/api/external-books/search?title=Clean%20Code</code></p>
+</div>
+@section Scripts {
+<script>
+ document.getElementById('external-form').addEventListener('submit', async e => {
+   e.preventDefault();
+   const title = document.getElementById('external-title').value.trim();
+   const status = document.getElementById('external-status');
+   const target = document.getElementById('external-results');
+   target.replaceChildren(); status.textContent = 'Завантаження...';
+   try {
+     const response = await fetch('/api/external-books/search?title=' + encodeURIComponent(title));
+     if (!response.ok) throw new Error('HTTP ' + response.status);
+     const data = await response.json();
+     status.textContent = 'Знайдено: ' + (data.docs?.length ?? 0);
+     for (const book of data.docs ?? []) {
+       const col = document.createElement('div'); col.className = 'col-md-6';
+       const card = document.createElement('div'); card.className = 'card h-100';
+       const body = document.createElement('div'); body.className = 'card-body';
+       const h = document.createElement('h2'); h.className = 'h5'; h.textContent = book.title ?? 'Без назви';
+       const info = document.createElement('p'); info.className = 'mb-0';
+       info.textContent = (book.author_name ?? []).join(', ') + ' · ' + (book.first_publish_year ?? 'Рік невідомий');
+       body.append(h, info); card.append(body); col.append(card); target.append(col);
+     }
+   } catch (error) { status.textContent = 'Не вдалося отримати дані: ' + error.message; }
+ });
+</script>
+}

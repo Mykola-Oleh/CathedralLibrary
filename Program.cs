@@ -15,6 +15,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<LibraryCache>();
 builder.Services.AddSingleton<LibraryEventFeed>();
 builder.Services.AddSingleton<LucenePublicationSearch>();
+builder.Services.AddSingleton<S3CoverStorage>();
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("LibraryDatabase")));
 

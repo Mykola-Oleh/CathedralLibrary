@@ -9,7 +9,7 @@
    version = Math.max(version, data.version || 0);
    for (const event of data.events || []) {
      const item = document.createElement('li'); item.className = 'list-group-item';
-     item.textContent = `Подія #${event.id} · ${new Date(event.atUtc).toLocaleString('uk-UA')} · ${event.kind}`;
+     item.textContent = `Подія #${event.Id ?? event.id} · ${new Date(event.AtUtc ?? event.atUtc).toLocaleString('uk-UA')} · ${event.Kind ?? event.kind}`;
      list.prepend(item); while (list.children.length > 30) list.lastElementChild.remove();
    }
    return (data.events || []).length;

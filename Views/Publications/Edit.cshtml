@@ -6,12 +6,13 @@
 
 <div class="container py-4">
     <h1>@ViewData["Title"]</h1>
-    <form method="post" asp-antiforgery="true" class="col-lg-7">
+    <form method="post" enctype="multipart/form-data" asp-antiforgery="true" class="col-lg-7">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="mb-3"><label asp-for="Title" class="form-label">Назва</label><input asp-for="Title" type="text" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
 <div class="mb-3"><label asp-for="Annotation" class="form-label">Анотація</label><textarea asp-for="Annotation" class="form-control" rows="3"></textarea><span asp-validation-for="Annotation" class="text-danger"></span></div>
 <div class="mb-3"><label asp-for="Year" class="form-label">Рік</label><input asp-for="Year" type="number" class="form-control" /><span asp-validation-for="Year" class="text-danger"></span></div>
 <div class="mb-3"><label asp-for="CoverUrl" class="form-label">Посилання на обкладинку</label><input asp-for="CoverUrl" type="url" class="form-control" /><span asp-validation-for="CoverUrl" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="CoverFile" class="form-label">Завантажити обкладинку в AWS S3 (PNG/JPEG/WebP, до 5 МБ)</label><input asp-for="CoverFile" type="file" accept="image/png,image/jpeg,image/webp" class="form-control" /><span asp-validation-for="CoverFile" class="text-danger"></span></div>
 <div class="mb-3"><label asp-for="PublicationTypeId" class="form-label">Тип видання</label><select asp-for="PublicationTypeId" asp-items="ViewBag.Types" class="form-select"><option value="0">Оберіть...</option></select><span asp-validation-for="PublicationTypeId" class="text-danger"></span></div>
 <div class="mb-3">
             <label asp-for="AuthorIds" class="form-label">Автори (пошук від 3 символів)</label>

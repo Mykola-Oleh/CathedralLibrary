@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CathedralLibrary.Controllers;
 
-public class PublicationsController(LibraryDbContext db) : Controller
+public class PublicationsController(LibraryDbContext db, CathedralLibrary.Services.S3CoverStorage covers) : Controller
 {
     public async Task<IActionResult> Index(string? search)
     {
@@ -50,6 +50,7 @@ public class PublicationsController(LibraryDbContext db) : Controller
     public async Task<IActionResult> Create(PublicationForm form)
     {
         if (!await ValidateForm(form)) { await LoadLists(form); return View("Edit", form); }
+        if (!await TryUploadCover(form)) { await LoadLists(form); return View("Edit", form); }
         var entity = new Publication { Title = form.Title, Annotation = form.Annotation, Year = form.Year, CoverUrl = form.CoverUrl, PublicationTypeId = form.PublicationTypeId };
         foreach (var id in form.AuthorIds.Distinct()) entity.PublicationAuthors.Add(new PublicationAuthor { AuthorId = id });
         db.Publications.Add(entity);
@@ -73,6 +74,7 @@ public class PublicationsController(LibraryDbContext db) : Controller
         var entity = await db.Publications.Include(x => x.PublicationAuthors).FirstOrDefaultAsync(x => x.Id == id);
         if (entity is null) return NotFound();
         if (!await ValidateForm(form)) { await LoadLists(form); return View(form); }
+        if (!await TryUploadCover(form)) { await LoadLists(form); return View(form); }
         entity.Title = form.Title; entity.Annotation = form.Annotation; entity.Year = form.Year;
         entity.CoverUrl = form.CoverUrl; entity.PublicationTypeId = form.PublicationTypeId;
         db.PublicationAuthors.RemoveRange(entity.PublicationAuthors);
@@ -81,6 +83,21 @@ public class PublicationsController(LibraryDbContext db) : Controller
         TempData["Success"] = "Видання оновлено";
         return RedirectToAction(nameof(Index));
     }
+    private async Task<bool> TryUploadCover(PublicationForm form)
+    {
+        if (form.CoverFile is null || form.CoverFile.Length == 0) return true;
+        try
+        {
+            form.CoverUrl = await covers.UploadAsync(form.CoverFile, HttpContext.RequestAborted);
+            return true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or Amazon.S3.AmazonS3Exception)
+        {
+            ModelState.AddModelError(nameof(form.CoverFile), ex is ArgumentException ? ex.Message : "Не вдалося завантажити обкладинку у S3. Перевірте налаштування та права IAM.");
+            return false;
+        }
+    }
+
     [Authorize]
     public async Task<IActionResult> Delete(int id)
     {

@@ -1,0 +1,18 @@
+@model IEnumerable<CathedralLibrary.Models.Publication>
+@{ ViewData["Title"] = "Lucene.NET пошук"; }
+<div class="container py-4">
+<h1>Повнотекстовий пошук — Lucene.NET</h1>
+<p class="text-muted">B4: індексований пошук за назвою, анотацією та ПІБ авторів.</p>
+<form method="get" action="/search" class="d-flex gap-2 mb-3">
+<input class="form-control" name="q" value="@ViewBag.Query" minlength="2" maxlength="100" required placeholder="Введіть назву, автора або слово з анотації" />
+<button class="btn btn-primary">Шукати</button>
+</form>
+@if (!string.IsNullOrWhiteSpace((string?)ViewBag.Query)) { <p>Знайдено: @Model.Count()</p> }
+<div class="list-group">
+@foreach (var p in Model) {
+<a class="list-group-item list-group-item-action" asp-controller="Publications" asp-action="Details" asp-route-id="@p.Id">
+<strong>@p.Title</strong> (@p.Year)<div class="small text-muted">@string.Join(", ", p.PublicationAuthors.Select(a => a.Author.FullName))</div>
+</a>
+}
+</div>
+</div>

@@ -2,8 +2,11 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
 namespace CathedralLibrary.Controllers;
 [Route("api/external-books")]
-public sealed class ExternalBooksController(IHttpClientFactory factory) : ControllerBase
+public sealed class ExternalBooksController(IHttpClientFactory factory) : Controller
 {
+    [HttpGet("/external-books")]
+    public IActionResult Index() => View();
+
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string? title, CancellationToken ct)
     {
